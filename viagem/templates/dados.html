@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% load static %}
+<div class="container">
+    <H1>Despesas da Viagem</H1>
+    <form action="{% url 'dados' %}" class="row g-3" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="col-md-2">
+            <label for="id" class="form-label">ID da Despesa</label>
+            <input type="number" name="id" id="id" class="form-control" readonly>
+        </div>
+        <div class="col-md-6">
+            <label for="nome-viagem" class="form-label">Selecione a viagem</label>
+            <select name="nome-viagem" id="nome-viagem" class="form-select" required>
+                <option value="{{ nomev.0 }}">{{ nomev.1}}</option>
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="data" class="form-label">Data da Despesa</label>
+            <input type="date" name="data" id="data" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+            <label for="tipo" class="form-label">Selecione a Despesa</label>
+            <select name="tipo" id="tipo" class="form-select" required onchange="despesa('{{ km }}')">
+                <option selected></option>
+                {% for item in tipos %}
+                <option value="{{ item.id }}">{{ item.tipo}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="qnt" class="form-label">Quantidade</label>
+            <input type="number" name="qnt" id="qnt"  step="0.010" class="form-control" >
+        </div>
+        <div class="col-md-2">
+            <label for="valor" class="form-label">Valor</label>
+            <input type="number" name="valor" id="valor" class="form-control" step="0.010" required>
+        </div>
+        <div class="col-md-4">
+            <label for="nota" class="form-label">Número da nota</label>
+            <input type="number" name="nota" id="nota" class="form-control" required>
+        </div>
+        <div class="col-md-2">
+            <label for="kmi" class="form-label">KM Inicial</label>
+            <input type="number" name="kmi" id="kmi" class="form-control" required>
+        </div>
+        <div class="col-md-2">
+            <label for="kmf" class="form-label">KM Final</label>
+            <input type="number" name="kmf" id="kmf" class="form-control" required onchange="somarkm()">
+        </div>
+        <div class="col-md-2">
+            <label for="kmr" class="form-label"> KM Rodados</label>
+            <input type="number" name="kmr" id="kmr" class="form-control" readonly>
+        </div>
+        <div class="col-md-2">
+            <label for="consumo" class="form-label">Cosnumo</label>
+            <input type="" name="consumo" id="consumo" class="form-control" readonly>
+        </div>
+        <div class="col-md-4">
+            <label for="cidade" class="form-label">Selecione a cidade</label>
+            <select name="cidade" id="cidade" class="form-select">
+                <option selected></option>
+                {% for item in cidade %}
+                <option value="{{ item.id }}">{{ item.nome}}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="pg" class="form-label">Forma de Pagamento</label>
+            <select name="pg" id="pg" class="form-select">
+                {% for item in pagamento %}
+                <option value="{{ item.id }}">{{ item.forma }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-6">
+            <label for="imagem" class="form-label">Uplod da nota da despesa</label>
+            <input type="file" name="imagem" id="imagem" class="form-control">
+        </div>
+        <div class="col-12">
+            <button type="submit" class="btn btn-outline-primary" name="bt" value="1" >Salvar Despesa</button>
+            <button type="submit" class="btn btn-outline-success" name="bt" value="3" >Limpar formulario</button>
+            <button type="submit" class="btn btn-outline-danger" name="bt" value="2" id="bt-del" disabled>Deletar Despesa</button>
+          </div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Viagem</th>
+                <th scope="col">Data</th>
+                <th scope="col">Despesa</th>
+                <th scope="col">Qnt</th>
+                <th scope="col">valor</th>
+                <th scope="col">Nota</th>
+                <th scope="col">km Rodado</th>
+                <th scope="col">Consumo</th>
+                <th scope="col">Cidade</th>
+                <th scope="col">Pagamento</th>
+                <th scope="col">Ação</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in despesas %}
+              <tr>
+                <th scope="row">{{ item.id }}</th>
+                <td>{{ item.idnomeviagem.nome }}</td>
+                <td>{{item.data}}</td>
+                <td>{{ item.idtipo.tipo }}</td>
+                {% if item.qnt == 0 %}
+                <td></td>
+                {% else %}
+                <td>{{ item.qnt }}</td>
+                {% endif %}
+                <td>{{ item.valor }}</td>
+                {% if item.imagemnota == 'nada' %}
+                    <td>{{ item.nota }}</td>
+                {% else %}
+                    <td><a href="{{ item.imagemnota.url }}" target="_blank">{{ item.nota }}</a></td>
+                {% endif %}
+                {% if item.idtipo.id != 5 %}
+                <td></td>
+                <td></td>
+                <td></td>
+                {% else %}
+                <td>{{ item.kmrodado }}</td>
+                <td>{{ item.media }}</td>
+                <td>{{ item.idcidade.nome }}</td>
+                {% endif %}
+                <td>{{ item.idpagamento.forma }}</td>
+                <td><button type="button" class="btn btn-primary" 
+                onclick="alterDespesa('{{ item.id }}', '{{ item.idnomeviagem.id }}', 
+                '{{ item.idtipo.id }}', '{{ item.data }}', '{{ item.qnt }}', '{{ item.valor }}', 
+                '{{ item.nota }}', '{{ item.kminicial }}', '{{ item.kmfinal }}', 
+                '{{ item.kmrodado }}', '{{ item.media }}', '{{ item.idcidade.id }}', '{{ item.idpagamento.id }}')">Alterar</button></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </form>
+</div>
+<script src="{% static 'js/dados.js' %}"></script>
+{% endblock %}

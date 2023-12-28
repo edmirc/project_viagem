@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% load static %}
+<div class="container">
+    <h1>Cadastro de Carros</h1>
+</div>
+<div class=" container">
+  <form action="{% url 'carro' %}" method="post" autocomplete="off" class="row g-3"> 
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id" class="form-label">Id do Carro</label>
+      <input class="form-control" id="id" name="id" readonly></input>
+        <label for="placa" class="form-label">Placa do Carro</label>
+        <input class="form-control" id="placa" name="placa" placeholder="Placa do carro" maxlength="7" required></input>
+        <label for="modelo" class="form-label">Modelo do Carro</label>
+        <input class="form-control" id="modelo" name="modelo" placeholder="Modelo do carro" required></input>        
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-outline-primary" >Salvar Carro</button>
+    </div>
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Placa</th>
+            <th scope="col">Modelo</th>
+            <th scope="col">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for car in carro %}
+          <tr>
+            <th scope="row">{{ car.id }}</th>
+            <td>{{ car.placa }}</td>
+            <td>{{ car.modelo }}</td>
+            <td><button type="button"  class="btn btn-primary" onclick="alterCarro('{{ car.id }}','{{ car.placa}}', '{{car.modelo}}')">Alterar</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </form>
+  <script src="{% static 'js/alter.js' %}"></script>
+</div>
+{% endblock %}

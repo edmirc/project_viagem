@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+
+<div class="container">
+    <h1>Relatorios</h1>
+    <form action="{% url 'relatorio' %}" method="post" autocomplete="off" class="row g-3">
+        {% csrf_token %}
+        <div class="col-md-4">
+            <label for="nomev" class="form-label">Selecione a viagem</label>
+            <select name="nomev" id="nomev" class="form-select" required>
+              <option selected></option>
+              {% for item in nomeRel %}
+                <option value="{{ item.id }}">{{ item.nome }}</option>
+              {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="data" class="form-label">Selecione a data</label>
+            <input type="date" name="data" id="data" class="form-control">
+        </div>
+        <h5>Tipos de Depesas</h5>
+        {% for i in tipo %}
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="tipo" value="{{ i.id }}" id="firstRadio" >
+                <label class="form-check-label" for="tipo">{{ i.tipo }}</label>
+                </li>
+            </ul>
+        </div>
+        {% endfor %}
+        <h5>Tipos de Pagamentos</h5>
+        {% for pg in pagamento %}
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item">
+                <input class="form-check-input me-1" type="radio" name="pagamento" value="{{ pg.id }}" id="firstRadio" >
+                <label class="form-check-label" for="pagamento">{{ pg.forma }}</label>
+                </li>
+            </ul>
+        </div>
+        {% endfor %}
+        <div class="mb-3">
+            <button type="submit" class="btn btn-outline-primary" >Enviar</button>
+        </div>
+        <h5>Dados</h5>   
+        <table class="table table-hover" id="minhaTabela">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Data</th>
+                <th scope="col">Despesa</th>
+                <th scope="col">Qnt</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Nota</th>
+                <th scope="col">km Final</th>
+                <th scope="col">km Rodado</th>
+                <th scope="col">Média</th>
+                <th scope="col">Cidade</th>
+                <th scope="col">Pagamento</th>
+            </tr>
+            </thead>
+            <tbody>
+                
+                {% for item in despesa %}
+                <tr>
+                    <th scope="row">{{item.id}}</th>
+                    <th>{{ item.data }}</th>
+                    <th>{{ item.idtipo.tipo }}</th>
+                    {% if item.qnt == 0.00 %}
+                        <th></th>
+                    {% else %}
+                        <th>{{ item.qnt }}</th>
+                    {% endif %}
+                    <th>{{ item.valor }}</th>
+                    {% if item.imagemnota == 'nada' %}
+                        <td>{{ item.nota }}</td>
+                    {% else %}
+                        <td><a href="{{item.imagemnota.url}}" target="_blank">{{ item.nota }}</a></td>
+                    {% endif %}
+                    {% if item.idtipo.id == 5 %}
+                        <th>{{ item.kmfinal }}</th>
+                        <th>{{ item.kmrodado }}</th>
+                        <th>{{ item.media }}</th>
+                        <th>{{ item.idcidade.nome }}</th>
+                    {% else %}
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    {% endif %}
+                    <th>{{ item.idpagamento.forma }}</th>
+                </tr>
+        
+                {% endfor %}
+                <tr>
+                    <th scope="row"></th>
+                    <th></th>
+                    <th>Total de despesas</th>
+                    <th></th>
+                    <th>{{ total }}</th>
+                </tr>
+                <tr>
+                    <th scope="row"></th>
+                    <th></th>
+                    <th>Total de Adiantamento</th>
+                    <th></th>
+                    <th>{{ adiantamento }}</th>
+                </tr>
+            </tbody>
+    </form>       
+</div>
+
+{% endblock %}

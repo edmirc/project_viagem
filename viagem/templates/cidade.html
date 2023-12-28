@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% load static %}
+<div class="container">
+    <h1>Cadastro de Cidades</h1>
+</div>
+<div class=" container">
+  <form action="{% url 'cidade' %}" method="post" autocomplete="off" class="row g-3"> 
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id" class="form-label">Id da Cidade</label>
+      <input class="form-control" id="id" name="id" readonly></input>
+      <label for="nome" class="form-label">Nome da Cidade</label>
+      <input class="form-control" id="nome" name="nome" placeholder="Nome da cidade" required></input>
+      <label for="estado" class="form-label">Nome do Estado</label>
+      <input class="form-control" id="estado" name="estado" placeholder="Nome do estado" maxlength="2" required></input>        
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-outline-primary" >Salvar</button>
+    </div>
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome</th>
+            <th scope="col">Estado</th>
+            <th scope="col">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for cid in cidade %}
+          <tr>
+            <th scope="row">{{cid.id}}</th>
+            <td>{{ cid.nome }}</td>
+            <td>{{ cid.estado }}</td>
+            <td><button type="button"  class="btn btn-primary"  onclick="alterCidade('{{ cid.id }}','{{ cid.nome }}', '{{ cid.estado }}')">Alterar</button></td>
+          </tr>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </form>
+</div>
+<script src="{% static 'js/alter.js' %}"></script>
+{% endblock %}

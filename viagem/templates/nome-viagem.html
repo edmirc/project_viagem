@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% load static %}
+<div class="container">
+    <h1>Nome da Viagem</h1>
+</div>
+<div class=" container">
+  <form action="{% url 'nome-viagem' %}" method="post" autocomplete="off" class="row g-3"> 
+    {% csrf_token %}
+    <div class="col-md-2">   
+      <label for="id" class="form-label">id da viagem</label>
+      <input class="form-control" id="id" name="id" readonly></input>
+    </div> 
+    <div class="col-md-6">
+      <label for="nome" class="form-label">Nome da viagem</label>
+      <input class="form-control" id="nome" name="nome" placeholder="Nome da viagem" required></input> 
+    </div>
+    <div class="col-md-2">
+      <label for="datai" class="form-label">Data de inicio</label>
+      <input type="date" class="form-control" id="datai" name="datai" placeholder="Data de inicio" required></input>
+    </div>
+    <div class="col-md-2">
+      <label for="dataf" class="form-label">Data do fim</label>
+      <input type="date" class="form-control" id="dataf" name="dataf" placeholder="Data do fim" required></input> 
+    </div>
+    <div class="col-md-4">
+      <label for="carro" class="form-label">Carro utilizado</label>
+      <select name="carro" id="carro" class="form-select">
+        <option selected></option>
+        {% for item in carro %}
+          <option value="{{ item.id }}">{{ item.placa }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label for="kmvi" class="form-label">KM inicial da viagem</label>
+      <input type="number" name="kmvi" id="kmvi" class="form-control" required>
+    </div>
+    <div class="col-md-4">
+      <label for="kmvf" class="form-label">KM final da viagem</label>
+      <input type="number" name="kmvf" id="kmvf" class="form-control" default="0" required>
+    </div>
+    <div class="col-md-6">
+        <label for="user">Usuário</label>
+        <select name="user" id="user" class="form-select">
+          <option selected></option>
+          {% for item in user %}
+            <option value="{{ item.id }}">{{ item.usuario}}</option>
+          {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+      <input class="form-ckeck-input" type="checkbox" value="1" id="atv" name="atv" onchange="atividade()">
+      <label class="form-check-label" for="atividade" id="ativi">
+          Inativo
+      </label>
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-outline-primary" >Salvar Viagem</button>
+    </div>
+    <table class="table table-hover" id="minhaTabela">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Nome da Viagem</th>
+            <th scope="col">data de incio</th>
+            <th scope="col">data do fim</th>
+            <th scope="col">Carro</th>
+            <th scope="col">km inicio</th>
+            <th scope="col">km final</th>
+            <th scope="col">Usuario</th>
+            <th scope="col">Situação</th>
+            <th scope="col">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in nomeviagem %}  
+          <tr>
+            <th scope="row">{{ item.id }}</th>
+            <td>{{ item.nome }}</td>
+            <td>{{ item.datainicio }}</td>
+            <td>{{ item.datafinal }}</td>
+            <td>{{ item.idcarro.placa }}</td>
+            <td>{{ item.kminicial }}</td>
+            <td>{{ item.kmfinal }}</td>
+            <td>{{ item.usuario.usuario }}</td>
+            {% if item.atividade %}
+              <td>Ativo</td>
+            {% else %}
+            <td>
+              Inativo
+            </td>
+            {% endif %}
+          <td><button type="button"  class="btn btn-primary"  onclick="alterarNome('{{ item.id }}',
+          '{{ item.nome }}', 
+          '{{ item.idcarro.id }}',
+          '{{ item.kminicial }}',
+          '{{ item.kmfinal }}',
+          '{{ item.usuario.id }}',
+          '{{ item.datainicio }}', 
+          '{{ item.datafinal }}')">Alterar</button></td>
+          {% endfor %}
+          </tr>
+        </tbody>
+      </table>
+  </form>
+</div>
+
+<script src="{% static 'js/alter.js' %}"></script> 
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% load static %}
+
+<div class="container">
+  <h1>Cadastro de Usuários</h1>
+    <form action="{% url 'usuarios' %}" method="post" autocomplete="off" class=" 'row g-3">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id" class="form-label">ID do usuário</label>
+            <input type="number" class="form-control" name="id" id="id" readonly>
+            <label for="nome" class="form-label">Nome do usuário</label>
+            <input type="text" class="form-control" name="nome" id="nome" required>
+            <label for="user" class="form-label">Nick name</label>
+            <input type="text" class="form-control" name="user" id="user" required>
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" name="email" id="email" required>
+            <label for="senha" class="form-label">Senha</label>
+            <input type="password" class="form-control" name="senha" id="senha" maxlength="5" required>
+        </div>
+        <div class="mb-3">
+            <button type="submit" class="btn btn-outline-primary" >Salvar usuário</button>
+        </div>
+    </form>
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Nick</th>
+                <th scope="col">email</th>
+              </tr>
+            </thead>
+            <tbody>
+                {% for item in usuario %}
+              <tr>
+                <th scope="row">{{ item.id }}</th>
+                <td>{{ item.usuario }}</td>
+                <td>{{ item.login }}</td>
+                <td>{{ item.email }}</td>
+                <td><button type="button"  class="btn btn-primary" onclick="alterUser('{{ item.id}}', 
+                '{{ item.usuario }}',
+                '{{ item.login}}', 
+                '{{item.email}}')">Alterar</button></td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+    </div>
+</div>
+<script src="{% static 'js/alter.js' %}"></script>
+{% endblock %}

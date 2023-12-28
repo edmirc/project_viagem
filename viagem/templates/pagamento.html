@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block conteudo %}
+{% load static %}
+<div class="container">
+    <h1>Tipos de Pagamentos</h1>
+</div>
+<div class=" container">
+  <form action="{% url 'pagamento' %}" method="post" autocomplete="off" class="row g-3"> 
+    {% csrf_token %}
+    <div class="mb-3">
+      <label for="id" class="form-label">Id de pagamento</label>
+      <input class="form-control" id="id" name="id" readonly></input>
+      <label for="tipo" class="form-label">Tipo de pagamento</label>
+      <input class="form-control" id="tipo" name="tipo" placeholder="Tipo de pagamento" required></input>        
+    </div>
+    <div class="mb-3">
+      <button type="submit" class="btn btn-outline-primary" >Salvar Pagamento</button>
+    </div>
+    <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Tipo de despesa</th>
+            <th scope="col">Ação</th>
+          </tr>
+        </thead>
+        <tbody>
+            {% for item in pagamento %}
+          <tr>
+            <th scope="row">{{ item.id }}</th>
+            <td>{{ item.forma }}</td>
+            <td><button type="button" class="btn btn-primary" 
+              onclick="alterPg('{{ item.id }}', '{{ item.forma }}')">Alterar</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </form>
+</div>
+<script src="{% static 'js/alter.js' %}"></script>
+{% endblock %}
