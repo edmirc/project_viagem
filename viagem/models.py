@@ -2,7 +2,7 @@ from collections.abc import Iterable
 from django.db import models
 from django.conf import settings
 import os
-from .image import trataImagem
+from .util.image import trataImagem
 
 
 class Carros(models.Model):
