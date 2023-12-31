@@ -43,7 +43,7 @@ function alterTipo(id, tipo){
 
 function alterPg(id, tipo){
     document.getElementById('id').value = id;
-    document.getElementById('tipo').value = tipo;
+    document.getElementById('forma').value = tipo;
 };
 
 

@@ -1,8 +1,13 @@
+from typing import Any
+from django.http import HttpResponse
 from django.shortcuts import render
 from .models import *
 from django.contrib import messages
-
+from django.views.generic import FormView
+from .forms import *
+from django.urls import reverse_lazy
 # Create your views here.
+
 
 
 def index(request):
@@ -28,62 +33,101 @@ def dados(request):
         }
     return render(request, 'dados.html', context)
 
-def carros(request):
-    if request.method == 'POST':
-        res = Carros().salveCarros(request.POST)
-        messages.success(request, res)
-    context = {
-        'carro': Carros().getCarros()
-    }
-    return render(request, 'carro.html', context)
+
+class CarrosView(FormView):
+    template_name = 'carro.html'
+    form_class = CarrosForm
+    success_url = reverse_lazy('carro')
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['carro'] = Carros().getCarros()
+        return context
+
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.stockCarros()
+        messages.success(self.request, res)
+        return super().form_valid(form)
+
+
+class CidadesView(FormView):
+    template_name = 'cidade.html'
+    success_url = reverse_lazy('cidade')
+    form_class = CidadesForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['cidade'] = Cidades().getCidade()
+        return context
     
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.stockCidades()
+        messages.success(self.request, res)
+        return super().form_valid(form)
 
-def cidades(request):
-    if request.method == 'POST':
-        res = Cidades().salveCidade(request.POST)
-        messages.success(request, res)
-    context = {
-        'cidade': Cidades().getCidade()
-    }
-    return render(request, 'cidade.html', context)
 
-def nomeViagem(request):
-    if request.method == 'POST':
-        res = NomeViagem().saveNomeViagem(request.POST)
-        messages.success(request, res)
-    context = {
-        'carro': Carros().getCarros(),
-        'user': Usuario().getUsers(),
-        'nomeviagem': NomeViagem().getNomeViagem()
-    }
-    return render(request, 'nome-viagem.html', context)
+class NomeViagemView(FormView):
+    template_name = 'nome-viagem.html'
+    form_class = NomeViagemForm
+    success_url = reverse_lazy('nome-viagem')
 
-def pagamentos(request):
-    if request.method == 'POST':
-        res = Pagamentos().savePagamentos(request.POST)
-        messages.success(request, res)
-    context = {
-        'pagamento': Pagamentos().getPagamentos()
-    }
-    return render(request, 'pagamento.html', context)
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['nomeviagem'] = NomeViagem().getNomeViagem()
+        context['user'] = Usuario().getUsers()
+        context['carro'] = Carros().getCarros()
+        return context
+    
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.stockTripName()
+        messages.success(self.request, res)
+        return super().form_valid(form)
 
-def tipos(request):
-    if request.method == 'POST':
-        res = Tipos().saveTipos(request)
-        messages.success(request, res)
-    context = {
-        'tipo': Tipos().getTipos()
-    }
-    return render(request, 'tipo.html', context)
 
-def usuarios(request):
-    if request.method == 'POST':
-        res = Usuario().saveUsuarios(request.POST)
-        messages.success(request, res)
-    context = {
-        'usuario': Usuario().getUsers()
-    }
-    return render(request, 'usuario.html', context)
+class PagamentosView(FormView):
+    template_name = 'pagamento.html'
+    success_url = reverse_lazy('pagamento')
+    form_class = PagamentosForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['pagamento'] = Pagamentos().getPagamentos()
+        return context
+    
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.stockPagamento()
+        messages.success(self.request, res)
+        return super().form_valid(form)
+
+class TiposView(FormView):
+    template_name = 'tipo.html'
+    success_url = reverse_lazy('tipo')
+    form_class = TiposForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['tipo'] = Tipos().getTipos()
+        return context
+    
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.stockType()
+        messages.success(self.request, res)
+        return super().form_valid(form)
+
+class UsuariosView(FormView):
+    template_name = 'usuario.html'
+    success_url = reverse_lazy('usuario')
+    form_class = UsuariosForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['usuario'] = Usuario().getUsers()
+        return context
+    
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.stockUser()
+        messages.success(self.request, res)
+        return super().form_valid(form)
 
 def relatorios(request):
     if request.method == 'POST':
