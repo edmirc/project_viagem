@@ -61,7 +61,7 @@ function alterDespesa(id, viagem, tipo, data, qnt, valor, nota, kmi, kmf, kmr, m
     var data1 = data.split("/");
     var res  = data1[2] + '-' + data1[1] + '-' + data1[0];
     document.getElementById('id').value = id;
-    document.getElementById('nome-viagem').value = viagem;
+    document.getElementById('nome_viagem').value = viagem;
     document.getElementById('tipo').value = tipo;
     document.getElementById('data').value = res;
     document.getElementById('qnt').value = parseFloat(qnt);

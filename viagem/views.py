@@ -3,15 +3,41 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from .models import *
 from django.contrib import messages
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 from .forms import *
 from django.urls import reverse_lazy
 # Create your views here.
 
 
+class IndexView(TemplateView):
+    template_name = 'index.html'
 
-def index(request):
-    return render(request, 'index.html')
+
+class DadosView(FormView):
+    template_name = 'dados.html'
+    success_url = reverse_lazy('dados')
+    form_class = DespesasForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        resget = NomeViagem().countAtividade()
+        if '1' not in resget.keys():
+            messages.success(self.request, resget['n'])
+        else:
+            context['nomev']= resget['1']
+            context['tipos'] = Tipos().getTipos()
+            context['cidade'] = Cidades().getCidade()
+            context['pagamento'] = Pagamentos().getPagamentos()
+            context['despesas'] = Despesas().getDespesas()
+            context['km'] = Despesas().lastKm()
+        return context
+    
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.stockExpenses()
+        messages.success(self.request, res)
+        return super().form_valid(form)
+
+
 
 def dados(request):
     resget = NomeViagem().countAtividade()
@@ -31,6 +57,7 @@ def dados(request):
             'despesas': Despesas().getDespesas(),
             'km': kmfinal
         }
+    print(request)
     return render(request, 'dados.html', context)
 
 
@@ -99,6 +126,7 @@ class PagamentosView(FormView):
         messages.success(self.request, res)
         return super().form_valid(form)
 
+
 class TiposView(FormView):
     template_name = 'tipo.html'
     success_url = reverse_lazy('tipo')
@@ -113,6 +141,7 @@ class TiposView(FormView):
         res = form.stockType()
         messages.success(self.request, res)
         return super().form_valid(form)
+
 
 class UsuariosView(FormView):
     template_name = 'usuario.html'
@@ -129,22 +158,35 @@ class UsuariosView(FormView):
         messages.success(self.request, res)
         return super().form_valid(form)
 
-def relatorios(request):
-    if request.method == 'POST':
-        despesa = Despesas().relDespesas(request)
-        if len(despesa[0]) == 0:
-            messages.success(request, "Sem dados para exibir!!")
-    else:
-        despesa = ['','', '']
-    context = {
-        'nomeRel': NomeViagem().getNomeViagem(),
-        'tipo': Tipos().getTipos(),
-        'despesa': despesa[0],
-        'pagamento': Pagamentos().getPagamentos(),
-        'total': despesa[1],
-        'adiantamento': despesa[2]
-    }
-    return render(request, 'relatorio.html', context)
+
+class RelatoriosView(FormView):
+    template_name = 'relatorio.html'
+    success_url = reverse_lazy('relatorio')
+    form_class = RelatoriosForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['nomeRel'] = NomeViagem().getNomeViagem()
+        context['tipo'] =  Tipos().getTipos()
+        context['pagamento'] = Pagamentos().getPagamentos()
+        return  context
+    
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.resultRel()
+        if len(res[0]) == 0:
+            messages.success(self.request, 'Sem dados para exibir!!')
+            return super().form_valid(form)
+        else:
+            dados: dict = dict()
+            dados['nomeRel'] = NomeViagem().getNomeViagem()
+            dados['tipo'] =  Tipos().getTipos()
+            dados['pagamento'] = Pagamentos().getPagamentos()
+            dados['despesa'] = res[0]
+            dados['total'] = res[1]
+            dados['adiantamento'] = res[2]
+            self.get_context_data(form=form, result = dados)
+        return self.render_to_response(dados)
+
 
 def resumo(request):
     context = dict()

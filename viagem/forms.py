@@ -141,7 +141,65 @@ class UsuariosForm(forms.Form):
     nome = forms.CharField(label='nome', max_length=100)
     user = forms.CharField(label='user', max_length=50)
     email = forms.CharField(label='email', max_length=70)
-    senha = forms.PasswordInput()
+    senha = forms.CharField(label='senha', max_length=5, widget=forms.PasswordInput(),required=False)
 
-    def stockUser(self):
+    def stockUser(self) -> str:
+        id = self.cleaned_data['id']
+        self.cleaned_data['nome'] = str(self.cleaned_data['nome']).title()
+        self.cleaned_data['email'] = str(self.cleaned_data['email']).lower()
+        checkUser = self.checkUser(self.cleaned_data['user'])
+        if id is None:
+            if checkUser != '':
+                return checkUser
+            if self.cleaned_data['senha'] == "":
+                return 'Senha inválida!!'
+            return Usuario().saveUsuarios(self.cleaned_data, 'salvar')
+        else:
+            return Usuario().saveUsuarios(self.cleaned_data, 'alterar')
+
+    def checkUser(self, user: str) -> str:
+        id = Usuario.objects.filter(login = user)
+        try:
+            id = id[0].id
+            return f'Login {user}, já cadastrado com o id = {id}!!'
+        except:
+            return ''
+
+
+class RelatoriosForm(forms.Form):
+    nomev = forms.CharField(label='nome', max_length=50)
+    data = forms.DateField(label='data', required=False)
+    tipo = forms.IntegerField(label='tipo', required=False)
+    pagamento = forms.IntegerField(label='pagamento', required=False)
+
+    def resultRel(self) -> list:
+        despesa = Despesas().relDespesas(self.cleaned_data)
+        return despesa
+    
+
+class DespesasForm(forms.Form):
+    id = forms.IntegerField(label='id', required=False)
+    nome_viagem = forms.CharField(label='nome_viagem')
+    data = forms.DateField(label='data')
+    tipo = forms.CharField(label='tipo')
+    qnt = forms.DecimalField(label='qnt', max_digits=10, decimal_places=2)
+    valor = forms.DecimalField(label='valor', max_digits=10, decimal_places=2)
+    nota = forms.IntegerField(label='nota')
+    kmi = forms.IntegerField(label='kmi')
+    kmf = forms.IntegerField(label='kmf')
+    kmr = forms.IntegerField(label='kmr')
+    consumo = forms.DecimalField(label='consumo', decimal_places=2, max_digits=10)
+    cidade = forms.CharField(label='cidade')
+    pg = forms.CharField(label='pg')
+    imagem = forms.FileField(label='imagem', required=False)
+    bt = forms.CharField(label='bt')
+
+    def stockExpenses(self):
+        id =  self.cleaned_data['id']
         print(self.cleaned_data)
+        #if id is None:
+        #    return Despesas().saveDespesa(self.cleaned_data, 'salvar')
+        #else:
+        #   return Despesas().saveDespesa(self.cleaned_data, 'alterar')
+        
+    

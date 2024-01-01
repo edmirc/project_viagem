@@ -102,25 +102,20 @@ class Usuario(models.Model):
     senha = models.CharField(name='senha', max_length=15)
     email = models.CharField(name='email', max_length=100)
 
-    def saveUsuarios(self, post: dict) -> str:
-        acao = 'salvo'
-        id = post['id']
-        nome = post['nome'].title().strip()
-        login = post['user'].strip().lower()
-        email = post['email'].strip().lower()
-        senha = post['senha']
+    def saveUsuarios(self, post: dict, acao: str) -> str:
         try:
-            if id != '':
-                user = Usuario.objects.get(id=id)
-                acao = 'alterado'
+            if acao == 'alterar':
+                user = Usuario.objects.get(id=post['id'])
+                if post['senha'] != '':
+                    user.senha = post['senha']
             else:
                 user = Usuario()
-            user.usuario = nome
-            user.login = login
-            user.email = email
-            user.senha = senha
+                user.senha = post['senha']
+            user.usuario = post['nome']
+            user.login = post['user']
+            user.email = post['email']
             user.save()
-            return f'Usuário {login}, {acao} com sucesso!!'
+            return f'Usuário {user.login}, {acao} com sucesso!!'
         except:
             return 'Dados NÃO salvo!!!'
     
@@ -206,55 +201,38 @@ class Despesas(models.Model):
     pagamento = models.ForeignKey(Pagamentos, name='idpagamento', on_delete=models.CASCADE)
     imagemnota = models.FileField(upload_to='notas', name='imagemnota', null=True, default='nada')
 
-    def saveDespesa(self, post: dict, file:dict):
+    def saveDespesa(self, post: dict, acao: str):
         bt = post['bt']
-        id  = post['id']
-        if str(bt) == '1':
-            acao = 'salvo'
-            viagem = NomeViagem.objects.get(id=post['nome-viagem'])
-            data = post['data']
-            tipo = Tipos.objects.get(id=post['tipo'])
-            qnt = post['qnt']
-            valor = post['valor']
-            nota = post['nota']
-            kmi = post['kmi']
-            kmf = post['kmf']
-            kmr = post['kmr']
-            consumo = post['consumo']
-            cidade = Cidades.objects.get(id=post['cidade'])
-            pg = Pagamentos.objects.get(id=post['pg'])
+        if bt == '1':
             try:
-                image = file['imagem']
-            except:
-                image = ''
-            try:
-                if id != '':
-                    dados = Despesas.objects.get(id = id)
-                    acao = 'Alterado'
-                    self.confereNota(image, dados.imagemnota)
+                if acao == 'alterar':
+                    dados = Despesas.objects.get(id = post['id'])
+                    if post['imagem'] is not None:
+                        self.confereNota(image, dados.imagemnota)
                 else:
                     dados = Despesas()
-                dados.idnomeviagem = viagem
-                dados.data = data
-                dados.idtipo = tipo
-                dados.qnt = qnt
-                dados.valor = valor
-                dados.nota = nota
-                dados.kminicial = kmi
-                dados.kmfinal = kmf
-                dados.kmrodado = kmr
-                dados.media = consumo
-                dados.idcidade = cidade
-                dados.idpagamento = pg
-                if image != "" : 
-                    dados.imagemnota = image
-                dados.save()
-                if image != "" : 
+                dados.idnomeviagem = NomeViagem.objects.get(id=post['nome_viagem'])
+                dados.data = post['data']
+                dados.idtipo = Tipos.objects.get(id=post['tipo'])
+                dados.qnt = post['qnt']
+                dados.valor = post['valor']
+                dados.nota = post['nota']
+                dados.kminicial = post['kmi']
+                dados.kmfinal = post['kmf']
+                dados.kmrodado = post['kmr']
+                dados.media = post['consumo']
+                dados.idcidade = Cidades.objects.get(id=post['cidade'])
+                dados.idpagamento = Pagamentos.objects.get(id=post['pagamento'])
+                if image is not None : 
+                    dados.imagemnota = post['imagem']
+                #dados.save()
+                if image is not None: 
                     image = trataImagem(str(image))
-                if int(kmf) > 0 and id == "": 
-                    viagem.kmfinal = kmf
-                viagem.save()
-                return f'Despesa {tipo.tipo}, {acao} com sucesso!!!'
+                if int(post['kmf']) > 0 and id is None:
+                    viagem = NomeViagem.objects.get(id=post['nome_viagem']) 
+                    viagem.kmfinal = post['kmf']
+                    viagem.save()
+                return f'Despesa {posttipo.tipo}, {acao} com sucesso!!!'
             except:
                 return 'Dados NÂO salvos!!!'
         elif str(bt) == '3':
@@ -273,7 +251,6 @@ class Despesas(models.Model):
         try:
             desp = Despesas.objects.get(id=id)
             image = desp.imagemnota
-            image = str(image).replace('/','\\')
             os.remove(os.path.join(settings.MEDIA_ROOT, str(image)))
             desp.delete()
             return f'Despesa de ID = {id}, deletado com sucesso!!!'
@@ -292,26 +269,26 @@ class Despesas(models.Model):
             vg = viagem[0].kminicial
             return vg
     
-    def relDespesas(self, request) -> list:
-        id = request.POST.get('nomev')
-        data = request.POST.get('data')
-        tipo = request.POST.get('tipo')
-        pg = request.POST.get('pagamento')
-    
+    def relDespesas(self, post: dict) -> list:
+        id = post['nomev']
+        data = post['data']
+        tipo = post['tipo']
+        pg = post['pagamento']
+        print(post)
         despesas = Despesas.objects.filter(idnomeviagem=id).order_by('data', 'idtipo')
-        if tipo is None and data == '' and pg is not None:
+        if tipo is None and data is None and pg is not None:
             despesas = despesas.filter(idpagamento = pg)
-        elif data != '' and tipo is None and pg is None:
+        elif data is not None and tipo is None and pg is None:
             despesas = despesas.filter(data = data)
-        elif data == '' and tipo is not None and pg is None:
+        elif data is None and tipo is not None and pg is None:
             despesas = despesas.filter(idtipo = tipo)
-        elif data != '' and tipo is not None and pg is None:
+        elif data is not None and tipo is not None and pg is None:
             despesas = despesas.filter(idtipo = tipo, data = data)
-        elif data != "" and tipo is None and pg is not None:
+        elif data is not None and tipo is None and pg is not None:
             despesas = despesas.filter(data = data, idpagamento=pg)
-        elif data != "" and tipo is not None and pg is not None:
+        elif data is not None and tipo is not None and pg is not None:
             despesas = despesas.filter(data = data, idtipo = tipo, idpagamento=pg)
-        elif data == "" and tipo is not None and pg is not None:
+        elif data is None and tipo is not None and pg is not None:
             despesas = despesas.filter(idtipo = tipo, idpagamento=pg)
         totalv = despesas.aggregate(total=models.Sum('valor'))
         adiantamento = despesas.filter(idtipo = 7)
@@ -335,7 +312,6 @@ class Despesas(models.Model):
         except:
             imagem1 = 'nada'
         if image != imagem1 and imagem1 != 'nada':
-            imagem1 = imagem1.replace('/','\\')
             try:
                 os.remove(os.path.join(settings.MEDIA_ROOT, str(imagem)))
             except:
