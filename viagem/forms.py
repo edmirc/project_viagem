@@ -196,10 +196,42 @@ class DespesasForm(forms.Form):
 
     def stockExpenses(self):
         id =  self.cleaned_data['id']
-        print(self.cleaned_data)
-        #if id is None:
-        #    return Despesas().saveDespesa(self.cleaned_data, 'salvar')
-        #else:
-        #   return Despesas().saveDespesa(self.cleaned_data, 'alterar')
+        if id is None:
+            return Despesas().saveDespesa(self.cleaned_data, 'salvar')
+        else:
+           return Despesas().saveDespesa(self.cleaned_data, 'alterar')
         
-    
+
+class ResumoForm(forms.Form):
+    viagem = forms.CharField(label='viagem')
+
+    def summaryReport(self) -> dict:
+        dados: dict = dict()
+        dados['soma'] = Despesas().resumoDespes(self.cleaned_data['viagem'])
+        pg = Pagamentos().getPagamentos()
+        pg = len(pg)
+        despesas = Despesas().resumoPagamento(self.cleaned_data['viagem'])
+        cont = 0
+        lista: list = list()
+        for i in despesas:
+            cont = 0
+            for j in i:
+                try:
+                    
+                    if cont < pg:
+                        lista1: list = list()
+                        lista1.append(j)
+                        soma = 0
+                        for k in range(0, pg):
+                            try:
+                                lista1.append(i[j][k]['soma'])
+                                soma += i[j][k]['soma']
+                            except:
+                                lista1.append(0.0)
+                    cont += 1
+                    lista1.append(soma)
+                    lista.append(lista1)
+                except:
+                    pass
+        dados['pg'] = lista
+        return dados

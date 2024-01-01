@@ -1,6 +1,5 @@
 from typing import Any
 from django.http import HttpResponse
-from django.shortcuts import render
 from .models import *
 from django.contrib import messages
 from django.views.generic import FormView, TemplateView
@@ -36,29 +35,6 @@ class DadosView(FormView):
         res = form.stockExpenses()
         messages.success(self.request, res)
         return super().form_valid(form)
-
-
-
-def dados(request):
-    resget = NomeViagem().countAtividade()
-    if '1' not in resget.keys():
-        messages.success(request, resget['n'])
-        context = {}
-    else:
-        if request.method == 'POST':
-            res = Despesas().saveDespesa(request.POST, request.FILES)
-            messages.success(request, res)
-        kmfinal = Despesas().lastKm()
-        context = {
-            'nomev': resget['1'],
-            'tipos': Tipos().getTipos(),
-            'cidade': Cidades().getCidade(),
-            'pagamento': Pagamentos().getPagamentos(),
-            'despesas': Despesas().getDespesas(),
-            'km': kmfinal
-        }
-    print(request)
-    return render(request, 'dados.html', context)
 
 
 class CarrosView(FormView):
@@ -188,11 +164,25 @@ class RelatoriosView(FormView):
         return self.render_to_response(dados)
 
 
-def resumo(request):
-    context = dict()
-    if request.method == 'POST':
-        context['soma'] = Despesas().resumoDespes(request.POST.get('viagem'))
-        context['pg'] = Despesas().resumoPagamento(request.POST.get('viagem'))
-    context['viagem']= NomeViagem().getNomeViagem()
-    context['forma'] = Pagamentos().getPagamentos()
-    return render(request, 'resumo.html', context)
+class ResumoView(FormView):
+    template_name = 'resumo.html'
+    success_url = reverse_lazy('resumo')
+    form_class = ResumoForm
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+        context['viagem']= NomeViagem().getNomeViagem()
+        context['forma'] = Pagamentos().getPagamentos()
+        return context
+    
+    def form_valid(self, form: Any) -> HttpResponse:
+        res = form.summaryReport()
+        dados = dict()
+        dados['soma'] = res['soma']
+        dados['viagem']= NomeViagem().getNomeViagem()
+        dados['forma'] = Pagamentos().getPagamentos()
+        dados['pg'] = res['pg']
+        self.get_context_data(form=form, result=dados)
+        return self.render_to_response(dados)
+
+

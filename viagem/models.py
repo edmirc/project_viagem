@@ -70,7 +70,7 @@ class Pagamentos(models.Model):
     
     def getPagamentos(self):
         try:
-            return Pagamentos.objects.all().order_by('id')
+            return Pagamentos.objects.all().order_by('forma')
         except:
             return list()
 
@@ -208,7 +208,7 @@ class Despesas(models.Model):
                 if acao == 'alterar':
                     dados = Despesas.objects.get(id = post['id'])
                     if post['imagem'] is not None:
-                        self.confereNota(image, dados.imagemnota)
+                        self.confereNota(post['imagem'], dados.imagemnota)
                 else:
                     dados = Despesas()
                 dados.idnomeviagem = NomeViagem.objects.get(id=post['nome_viagem'])
@@ -222,23 +222,23 @@ class Despesas(models.Model):
                 dados.kmrodado = post['kmr']
                 dados.media = post['consumo']
                 dados.idcidade = Cidades.objects.get(id=post['cidade'])
-                dados.idpagamento = Pagamentos.objects.get(id=post['pagamento'])
-                if image is not None : 
+                dados.idpagamento = Pagamentos.objects.get(id=post['pg'])
+                if post['imagem'] is not None : 
                     dados.imagemnota = post['imagem']
-                #dados.save()
-                if image is not None: 
-                    image = trataImagem(str(image))
+                dados.save()
+                if post['imagem'] is not None: 
+                    trataImagem(str(post['imagem']))
                 if int(post['kmf']) > 0 and id is None:
                     viagem = NomeViagem.objects.get(id=post['nome_viagem']) 
                     viagem.kmfinal = post['kmf']
                     viagem.save()
-                return f'Despesa {posttipo.tipo}, {acao} com sucesso!!!'
+                return f'Despesa {dados.idtipo.tipo}, {acao} com sucesso!!!'
             except:
                 return 'Dados NÂO salvos!!!'
         elif str(bt) == '3':
             return 'Formulario limpo!!'
         else:
-            return self.dropDespesa(id)
+            return self.dropDespesa(post['id'])
     
     def getDespesas(self):
         try:
