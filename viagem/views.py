@@ -184,5 +184,3 @@ class ResumoView(FormView):
         dados['pg'] = res['pg']
         self.get_context_data(form=form, result=dados)
         return self.render_to_response(dados)
-
-

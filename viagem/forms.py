@@ -213,6 +213,8 @@ class ResumoForm(forms.Form):
         despesas = Despesas().resumoPagamento(self.cleaned_data['viagem'])
         cont = 0
         lista: list = list()
+        listasoma: list = ['Total']
+        dici: dict = dict()
         for i in despesas:
             cont = 0
             for j in i:
@@ -224,8 +226,14 @@ class ResumoForm(forms.Form):
                         soma = 0
                         for k in range(0, pg):
                             try:
-                                lista1.append(i[j][k]['soma'])
-                                soma += i[j][k]['soma']
+                                paga = i[j][k]['soma']
+                                lista1.append(paga)
+                                soma += paga
+                                try:
+                                    dici[k] = dici[k] + paga
+                                except:
+                                    dici[k] = paga
+                                
                             except:
                                 lista1.append(0.0)
                     cont += 1
@@ -233,5 +241,8 @@ class ResumoForm(forms.Form):
                     lista.append(lista1)
                 except:
                     pass
+        for i in dici.values():
+            listasoma.append(i)
+        lista.append(listasoma)
         dados['pg'] = lista
         return dados

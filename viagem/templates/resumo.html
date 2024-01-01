@@ -58,9 +58,11 @@
                 {% for item in pg %}
                     <tr>
                     {% for item1 in item %}
-                       
+                        {% if item1 != 0.0%}
                             <th scope="row">{{ item1 }}</th>
-                       
+                        {% else %}
+                            <th scope="row"></th>
+                        {% endif %}
                     {% endfor %}
                     </tr>
                 {% endfor %}
