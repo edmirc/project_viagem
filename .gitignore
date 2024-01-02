@@ -1,4 +1,6 @@
 venv
 media
 pyvenv.cfg
-__pycache__
+viagem/__pycache__
+util/__pychache__
+server/__pychache__

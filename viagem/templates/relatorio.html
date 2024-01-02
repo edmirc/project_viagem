@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block conteudo %}
-
+{% load static %}
 <div class="container">
     <h1>Relatorios</h1>
     <form action="{% url 'relatorio' %}" method="post" autocomplete="off" class="row g-3">
@@ -42,6 +42,7 @@
         {% endfor %}
         <div class="mb-3">
             <button type="submit" class="btn btn-outline-primary" >Enviar</button>
+            <input type="image" class="form-control" src="{% static 'image/excel.png' %}" alt="submit">
         </div>
         <h5>Dados</h5>   
         <table class="table table-hover" id="minhaTabela">
