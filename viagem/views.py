@@ -149,19 +149,24 @@ class RelatoriosView(FormView):
     
     def form_valid(self, form: Any) -> HttpResponse:
         res = form.resultRel()
-        if len(res[0]) == 0:
-            messages.success(self.request, 'Sem dados para exibir!!')
-            return super().form_valid(form)
+        if res == '1':
+            res = form.resultBtSend()
+            if len(res[0]) == 0:
+                messages.success(self.request, 'Sem dados para exibir!!')
+                return super().form_valid(form)
+            else:
+                dados: dict = dict()
+                dados['nomeRel'] = NomeViagem().getNomeViagem()
+                dados['tipo'] =  Tipos().getTipos()
+                dados['pagamento'] = Pagamentos().getPagamentos()
+                dados['despesa'] = res[0]
+                dados['total'] = res[1]
+                dados['adiantamento'] = res[2]
+                self.get_context_data(form=form, result = dados)
+            return self.render_to_response(dados)
         else:
-            dados: dict = dict()
-            dados['nomeRel'] = NomeViagem().getNomeViagem()
-            dados['tipo'] =  Tipos().getTipos()
-            dados['pagamento'] = Pagamentos().getPagamentos()
-            dados['despesa'] = res[0]
-            dados['total'] = res[1]
-            dados['adiantamento'] = res[2]
-            self.get_context_data(form=form, result = dados)
-        return self.render_to_response(dados)
+            res = form.resultBtExcell()
+            return res
 
 
 class ResumoView(FormView):

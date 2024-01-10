@@ -1,5 +1,6 @@
 from django import forms
 from .models import *
+from .util.excell import createExcell
 
 
 class CarrosForm(forms.Form):
@@ -171,10 +172,19 @@ class RelatoriosForm(forms.Form):
     data = forms.DateField(label='data', required=False)
     tipo = forms.IntegerField(label='tipo', required=False)
     pagamento = forms.IntegerField(label='pagamento', required=False)
+    bt = forms.CharField(label='bt')
 
     def resultRel(self) -> list:
-        despesa = Despesas().relDespesas(self.cleaned_data)
+        botao = self.cleaned_data['bt']
+        return botao
+    
+    def resultBtSend(self) -> list:
+        despesa: list = Despesas().relDespesas(self.cleaned_data)
         return despesa
+    
+    def resultBtExcell(self) -> list:
+        despesa: list = Despesas().relDespesas(self.cleaned_data)
+        return createExcell(despesa)
     
 
 class DespesasForm(forms.Form):
@@ -208,41 +218,30 @@ class ResumoForm(forms.Form):
     def summaryReport(self) -> dict:
         dados: dict = dict()
         dados['soma'] = Despesas().resumoDespes(self.cleaned_data['viagem'])
-        pg = Pagamentos().getPagamentos()
-        pg = len(pg)
-        despesas = Despesas().resumoPagamento(self.cleaned_data['viagem'])
-        cont = 0
-        lista: list = list()
-        listasoma: list = ['Total']
-        dici: dict = dict()
-        for i in despesas:
-            cont = 0
-            for j in i:
-                try:
-                    
-                    if cont < pg:
-                        lista1: list = list()
-                        lista1.append(j)
-                        soma = 0
-                        for k in range(0, pg):
-                            try:
-                                paga = i[j][k]['soma']
-                                lista1.append(paga)
-                                soma += paga
-                                try:
-                                    dici[k] = dici[k] + paga
-                                except:
-                                    dici[k] = paga
-                                
-                            except:
-                                lista1.append(0.0)
-                    cont += 1
-                    lista1.append(soma)
-                    lista.append(lista1)
-                except:
-                    pass
-        for i in dici.values():
-            listasoma.append(i)
-        lista.append(listasoma)
-        dados['pg'] = lista
+        dados['pg'] = ''
+        formas: dict = dict()
+        formas['total'] = 'Total'
+        for i in Pagamentos().getPagamentos():
+            formas[i.forma] = 0.0 
+        tipos = Tipos().getTipos()
+        pg  = Despesas().resumoPagamento(self.cleaned_data['viagem'])
+        lista1: list = list()
+        for l,i in enumerate(tipos):
+            lista: list = list()
+            lista.append(i.tipo)
+            soma = 0
+            for k, m in enumerate(formas.keys()):
+                if k > 0:
+                    try:
+                        pagamento = pg[l][i.tipo][m]
+                        lista.append(pagamento)
+                        soma += pagamento
+                        soma1 = formas[m]
+                        formas[m] = round(soma1 + float(pagamento),2)
+                    except:
+                        lista.append(0.0) 
+            lista.append(soma)
+            lista1.append(lista)
+        lista1.append([h  for h in formas.values()])
+        dados['pg'] = lista1 
         return dados

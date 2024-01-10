@@ -56,7 +56,6 @@ class Pagamentos(models.Model):
     forma = models.CharField(name='forma', unique=True, max_length=50)
 
     def savePagamentos(self, post: dict, acao: str) -> str:
-        print(post, acao)
         try:
             if acao == 'alterar':
                 pag = Pagamentos.objects.get(id=post['id'])
@@ -274,7 +273,6 @@ class Despesas(models.Model):
         data = post['data']
         tipo = post['tipo']
         pg = post['pagamento']
-        print(post)
         despesas = Despesas.objects.filter(idnomeviagem=id).order_by('data', 'idtipo')
         if tipo is None and data is None and pg is not None:
             despesas = despesas.filter(idpagamento = pg)
@@ -332,11 +330,15 @@ class Despesas(models.Model):
     def resumoPagamento(self, viagem):
         pag = Despesas.objects.filter(idnomeviagem=viagem)
         lista = list()
+        formas: dict = dict()
         for i in Tipos().getTipos():
+            formas: dict = dict()
             despesa = dict()
             pag_des = pag.filter(idtipo__tipo=i.tipo)
             pag_des = pag_des.values('idpagamento__forma').annotate(soma=models.Sum('valor'))
-            despesa[i.tipo] = pag_des
+            for j in pag_des:
+                formas[j['idpagamento__forma']] = j['soma'] 
+            despesa[i.tipo] = formas
             lista.append(despesa)
         return lista
     
