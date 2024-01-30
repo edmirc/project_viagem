@@ -48,8 +48,8 @@ function alterPg(id, tipo){
 
 
 function atividade(){
-    var labe = document.getElementById('ativi');
-    var inp = document.getElementById('atv');
+    var labe = document.getElementById('label');
+    var inp = document.getElementById('atividade');
     if (inp.checked){
         labe.textContent = 'Ativo';
 

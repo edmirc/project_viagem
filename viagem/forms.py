@@ -91,7 +91,7 @@ class NomeViagemForm(forms.Form):
     kmvi = forms.IntegerField(label='kmi')
     kmvf = forms.IntegerField(label='kmf')
     user = forms.CharField(label='user', max_length=10)
-    atividade = forms.BooleanField(label='atividade', required=False)
+    atividade = forms.BooleanField(label='labelatividade', required=False)
 
     def stockTripName(self):
         id = self.cleaned_data['id']

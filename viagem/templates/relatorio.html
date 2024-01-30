@@ -73,7 +73,7 @@
                     {% else %}
                         <th>{{ item.qnt }}</th>
                     {% endif %}
-                    <th>{{ item.valor }}</th>
+                    <th>R$ {{ item.valor }}</th>
                     {% if item.imagemnota == 'nada' %}
                         <td>{{ item.nota }}</td>
                     {% else %}
@@ -99,14 +99,14 @@
                     <th></th>
                     <th>Total de despesas</th>
                     <th></th>
-                    <th>{{ total }}</th>
+                    <th>R$ {{ total }}</th>
                 </tr>
                 <tr>
                     <th scope="row"></th>
                     <th></th>
                     <th>Total de Adiantamento</th>
                     <th></th>
-                    <th>{{ adiantamento }}</th>
+                    <th>R$ {{ adiantamento }}</th>
                 </tr>
             </tbody>
     </form>       
