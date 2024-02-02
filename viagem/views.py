@@ -189,3 +189,8 @@ class ResumoView(FormView):
         dados['pg'] = res['pg']
         self.get_context_data(form=form, result=dados)
         return self.render_to_response(dados)
+
+class LoginView(FormView):
+    template_name = 'login.html'
+    success_url = reverse_lazy('login')
+    form_class = LoginForm

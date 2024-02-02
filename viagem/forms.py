@@ -245,3 +245,7 @@ class ResumoForm(forms.Form):
         lista1.append([h  for h in formas.values()])
         dados['pg'] = lista1 
         return dados
+
+
+class LoginForm(forms.Form):
+    pass

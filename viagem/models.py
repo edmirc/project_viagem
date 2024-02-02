@@ -4,6 +4,7 @@ from django.db import models
 from django.conf import settings
 import os
 from .util.image import trataImagem
+from django.contrib.auth.models import User
 
 
 class Carros(models.Model):
@@ -102,21 +103,22 @@ class Usuario(models.Model):
     email = models.CharField(name='email', max_length=100)
 
     def saveUsuarios(self, post: dict, acao: str) -> str:
-        try:
-            if acao == 'alterar':
-                user = Usuario.objects.get(id=post['id'])
-                if post['senha'] != '':
-                    user.senha = post['senha']
-            else:
-                user = Usuario()
+        #try:
+        if acao == 'alterar':
+            user = Usuario.objects.get(id=post['id'])
+            if post['senha'] != '':
                 user.senha = post['senha']
-            user.usuario = post['nome']
-            user.login = post['user']
-            user.email = post['email']
-            user.save()
-            return f'Usuário {user.login}, {acao} com sucesso!!'
-        except:
-            return 'Dados NÃO salvo!!!'
+        else:
+            user = Usuario()
+            user.senha = post['senha']
+            self.saveDjangoUser(post)
+        user.usuario = post['nome']
+        user.login = post['user']
+        user.email = post['email']
+        user.save()
+        return f'Usuário {user.login}, {acao} com sucesso!!'
+        #except:
+        #return 'Dados NÃO salvo!!!'
     
 
     def getUsers(self):
@@ -124,6 +126,14 @@ class Usuario(models.Model):
             return Usuario.objects.all()
         except:
             return list()
+        
+    def saveDjangoUser(self, post: dict):
+        usuario = User()
+        usuario.username= post['user']
+        usuario.email= post['email']
+        usuario.password= post['senha']
+        usuario.save()
+        
         
 class NomeViagem(models.Model):
     nome = models.CharField(name='nome', max_length=100)

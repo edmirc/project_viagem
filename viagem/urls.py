@@ -12,5 +12,6 @@ urlpatterns = [
     path('tipos-Despesa/', TiposView.as_view(), name= 'tipo'),
     path('usuarios/', UsuariosView.as_view(), name='usuario'),
     path('Viagem/Relatorios/', RelatoriosView.as_view(), name='relatorio'),
-    path('Viagem/Relatorios/Resumo', ResumoView.as_view(), name='resumo')
+    path('Viagem/Relatorios/Resumo', ResumoView.as_view(), name='resumo'),
+    path('Login', LoginView.as_view(), name='login')
 ]
