@@ -6,24 +6,20 @@
     <form action="{% url 'dados' %}" class="row g-3" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="col-md-2">
-            <!--id-->
             <label for="id" class="form-label">ID da Despesa</label>
             <input type="number" name="id" id="id" class="form-control" readonly>
         </div>
         <div class="col-md-6">
-            <!--nome viagem-->
             <label for="nome-viagem" class="form-label">Selecione a viagem</label>
             <select name="nome_viagem" id="nome_viagem" class="form-select" required>
                 <option value="{{ nomev.0 }}">{{ nomev.1}}</option>
             </select>
         </div>
         <div class="col-md-4">
-            <!--data-->
             <label for="data" class="form-label">Data da Despesa</label>
             <input type="date" name="data" id="data" class="form-control" required>
         </div>
         <div class="col-md-4">
-            <!--tipo-->
             <label for="tipo" class="form-label">Selecione a Despesa</label>
             <select name="tipo" id="tipo" class="form-select" required onchange="despesa('{{ km }}')">
                 <option selected></option>
@@ -33,31 +29,32 @@
             </select>
         </div>
         <div class="col-md-2">
-            <!--qnt-->
             <label for="qnt" class="form-label">Quantidade</label>
             <input type="number" name="qnt" id="qnt"  step="0.010" class="form-control" >
         </div>
         <div class="col-md-2">
-            <!--valor-->
             <label for="valor" class="form-label">Valor</label>
             <input type="number" name="valor" id="valor" class="form-control" step="0.010" required>
         </div>
         <div class="col-md-4">
-            <!--nota-->
             <label for="nota" class="form-label">Número da nota</label>
             <input type="number" name="nota" id="nota" class="form-control" required>
         </div>
-        <div id="divkmi" class="col-md-2">
-            <!--kmi-->
+        <div class="col-md-2">
+            <label for="kmi" class="form-label">KM Inicial</label>
+            <input type="number" name="kmi" id="kmi" class="form-control" required>
         </div>
-        <div id="divkmf" class="col-md-2">
-            <!--kmf-->
+        <div class="col-md-2">
+            <label for="kmf" class="form-label">KM Final</label>
+            <input type="number" name="kmf" id="kmf" class="form-control" required onchange="somarkm()">
         </div>
-        <div id="divkmr" class="col-md-2">
-            <!--kmr-->
+        <div class="col-md-2">
+            <label for="kmr" class="form-label"> KM Rodados</label>
+            <input type="number" name="kmr" id="kmr" class="form-control" readonly>
         </div>
-        <div id="divcons" class="col-md-2">
-            <!--consumo-->
+        <div class="col-md-2">
+            <label for="consumo" class="form-label">Cosnumo</label>
+            <input type="" name="consumo" id="consumo" class="form-control" readonly>
         </div>
         <div class="col-md-4">
             <label for="cidade" class="form-label">Selecione a cidade</label>

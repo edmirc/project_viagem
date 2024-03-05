@@ -10,7 +10,7 @@ function somarkm(){
     }else{
         kmr.value = parseInt(kmf.value) - parseInt(kmi.value);
         var media = parseFloat(kmr.value) / parseFloat(qnt.value)
-        document.getElementById('consumo').value = media.toFixed(2);
+        document.getElementById('media').value = media.toFixed(2);
         document.getElementById('cidade').focus();
     };
     
@@ -22,23 +22,16 @@ function voltarAoTopo() {
 
 function despesa(km){
     var despesa = document.getElementById('tipo');
-    var kmi = document.getElementById('kmi');
-    var kmf = document.getElementById('kmf');
-    var kmr = document.getElementById('kmr');
-    var consumo = document.getElementById('consumo');
     var cidade = document.getElementById('cidade');
     var qnt = document.getElementById('qnt');
     if (despesa.value == '5'){
-        kmi.value = km;
-        kmf.value = '';
-        kmr.value = '';
-        consumo.value = '';
-        qnt.value = '';
-        cidade.value = '';
-        kmi.readOnly = false;
-        kmf.readOnly = false;
-        qnt.readOnly = false;
+        forKM();
+        forKMf();
+        forKMr();
+        forConsumo();
+        document.getElementById("kmi").value = km;
     }else{
+        clearKm()
         if (despesa.value == '4' || despesa.value == '7'){
             var qnt = document.getElementById('qnt'); 
             qnt.value = '0';
@@ -47,14 +40,74 @@ function despesa(km){
             qnt.value = '';
             qnt.readOnly = false;
         };
-        kmi.value = 0;
-        kmf.value = 0;
-        kmr.value = 0;
-        consumo.value = 0;
         cidade.value = '1';
-        kmi.readOnly = true;
-        kmf.readOnly = true;
     };
+};
+
+function forKM(){
+    var divkmi = document.getElementById("divkmi");
+    var labelkmi = document.createElement("label");
+    var kmi = document.createElement("input");
+    labelkmi.classList = "form-label";
+    labelkmi.textContent = "KM Inicial";
+    kmi.classList = "form-control";
+    kmi.type = "number";
+    kmi.name = "kmi";
+    kmi.id = "kmi";
+    divkmi.appendChild(labelkmi)
+    divkmi.appendChild(kmi)
+};
+
+function forKMf(){
+    var divkmf = document.getElementById("divkmf");
+    var labkmf = document.createElement("label");
+    var kmf = document.createElement("input");
+    labkmf.classList = "form-label";
+    labkmf.textContent = "KM Final";
+    kmf.classList = "form-control";
+    kmf.id = "kmf";
+    kmf.name = "kmf";
+    kmf.type = "number";
+    kmf.addEventListener("change", somarkm)
+    divkmf.appendChild(labkmf);
+    divkmf.appendChild(kmf);
+};
+
+function forKMr(){
+    var divkmr = document.getElementById("divkmr");
+    var labkmr = document.createElement("label");
+    var kmr = document.createElement("input");
+    labkmr.classList = "form-label";
+    labkmr.textContent = "Km Rodado";
+    kmr.classList = "form-control";
+    kmr.name = "kmr";
+    kmr.id = "kmr";
+    kmr.type = "number";
+    kmr.readOnly = true;
+    divkmr.appendChild(labkmr);
+    divkmr.appendChild(kmr);
+};
+
+function forConsumo(){
+    var divkmf = document.getElementById("divcons");
+    var labcons = document.createElement("label");
+    var cons = document.createElement("input");
+    labcons.classList = "form-label";
+    labcons.textContent = "Consumo";
+    cons.classList = "form-control";
+    cons.id = "media";
+    cons.name = "media";
+    cons.type = "number";
+    cons.readOnly = true;
+    divcons.appendChild(labcons);
+    divcons.appendChild(cons);
+};
+
+function clearKm(){
+    document.getElementById("divkmi").innerHTML = "";
+    document.getElementById("divkmf").innerHTML = "";
+    document.getElementById("divkmr").innerHTML = "";
+    document.getElementById("divcons").innerHTML = "";
 };
 
 function alterDespesa(id, viagem, tipo, data, qnt, valor, nota, kmi, kmf, kmr, media, cid, pag){
