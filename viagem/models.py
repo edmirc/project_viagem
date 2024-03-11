@@ -133,8 +133,7 @@ class Usuario(models.Model):
         usuario.email= post['email']
         usuario.password= post['senha']
         usuario.save()
-        
-        
+               
 class NomeViagem(models.Model):
     nome = models.CharField(name='nome', max_length=100)
     datainicio = models.DateField(name='datainicio')
@@ -226,10 +225,16 @@ class Despesas(models.Model):
                 dados.qnt = post['qnt']
                 dados.valor = post['valor']
                 dados.nota = post['nota']
-                dados.kminicial = post['kmi']
-                dados.kmfinal = post['kmf']
-                dados.kmrodado = post['kmr']
-                dados.media = post['consumo']
+                if dados.idtipo.id == 5:
+                    dados.kminicial = post['kmi']
+                    dados.kmfinal = post['kmf']
+                    dados.kmrodado = post['kmr']
+                    dados.media = post['media']
+                else:
+                    dados.kminicial = 0
+                    dados.kmfinal = 0
+                    dados.kmrodado = 0
+                    dados.media = 0
                 dados.idcidade = Cidades.objects.get(id=post['cidade'])
                 dados.idpagamento = Pagamentos.objects.get(id=post['pg'])
                 if post['imagem'] is not None : 
@@ -237,7 +242,7 @@ class Despesas(models.Model):
                 dados.save()
                 if post['imagem'] is not None: 
                     trataImagem(str(post['imagem']))
-                if int(post['kmf']) > 0 and id is None:
+                if dados.kminicial > 0 and id is None:
                     viagem = NomeViagem.objects.get(id=post['nome_viagem']) 
                     viagem.kmfinal = post['kmf']
                     viagem.save()

@@ -3,7 +3,7 @@
 {% load static %}
 <div class="container">
     <H1>Despesas da Viagem</H1>
-    <form action="{% url 'dados' %}" class="row g-3" method="post" enctype="multipart/form-data">
+    <form id="form"  action="{% url 'dados' %}" class="row g-3" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="col-md-2">
             <!--id-->
@@ -47,19 +47,7 @@
             <label for="nota" class="form-label">Número da nota</label>
             <input type="number" name="nota" id="nota" class="form-control" required>
         </div>
-        <div id="divkmi" class="col-md-2">
-            <!--kmi-->
-        </div>
-        <div id="divkmf" class="col-md-2">
-            <!--kmf-->
-        </div>
-        <div id="divkmr" class="col-md-2">
-            <!--kmr-->
-        </div>
-        <div id="divcons" class="col-md-2">
-            <!--consumo-->
-        </div>
-        <div class="col-md-4">
+        <div class="col-md-6" id="divcidade">
             <label for="cidade" class="form-label">Selecione a cidade</label>
             <select name="cidade" id="cidade" class="form-select">
                 <option selected></option>

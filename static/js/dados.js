@@ -30,8 +30,10 @@ function despesa(km){
         forKMr();
         forConsumo();
         document.getElementById("kmi").value = km;
+        document.getElementById("divcidade").classList = "col-md-4";
     }else{
         clearKm()
+        document.getElementById("divcidade").classList = "col-md-6";
         if (despesa.value == '4' || despesa.value == '7'){
             var qnt = document.getElementById('qnt'); 
             qnt.value = '0';
@@ -45,38 +47,53 @@ function despesa(km){
 };
 
 function forKM(){
-    var divkmi = document.getElementById("divkmi");
+    var divkmi = document.createElement("div");
+    divkmi.id = "divkmi"
     var labelkmi = document.createElement("label");
     var kmi = document.createElement("input");
+    divkmi.classList  = "col-md-2";
     labelkmi.classList = "form-label";
     labelkmi.textContent = "KM Inicial";
     kmi.classList = "form-control";
     kmi.type = "number";
     kmi.name = "kmi";
     kmi.id = "kmi";
-    divkmi.appendChild(labelkmi)
-    divkmi.appendChild(kmi)
+    kmi.required = true;
+    divkmi.appendChild(labelkmi);
+    divkmi.appendChild(kmi);
+    var form = document.querySelector("#form");
+    var referencia = document.querySelector("#divcidade");
+    form.insertBefore(divkmi, referencia);
+
 };
 
 function forKMf(){
-    var divkmf = document.getElementById("divkmf");
+    var divkmf = document.createElement("div");
+    divkmf.id = "divkmf";
     var labkmf = document.createElement("label");
     var kmf = document.createElement("input");
+    divkmf.classList  = "col-md-2";
     labkmf.classList = "form-label";
     labkmf.textContent = "KM Final";
     kmf.classList = "form-control";
     kmf.id = "kmf";
     kmf.name = "kmf";
     kmf.type = "number";
+    kmf.required = true;
     kmf.addEventListener("change", somarkm)
     divkmf.appendChild(labkmf);
     divkmf.appendChild(kmf);
+    var form = document.querySelector("#form");
+    var referencia = document.querySelector("#divcidade");
+    form.insertBefore(divkmf, referencia);
 };
 
 function forKMr(){
-    var divkmr = document.getElementById("divkmr");
+    var divkmr = document.createElement("div");
+    divkmr.id = "divkmr";
     var labkmr = document.createElement("label");
     var kmr = document.createElement("input");
+    divkmr.classList  = "col-md-2";
     labkmr.classList = "form-label";
     labkmr.textContent = "Km Rodado";
     kmr.classList = "form-control";
@@ -86,12 +103,17 @@ function forKMr(){
     kmr.readOnly = true;
     divkmr.appendChild(labkmr);
     divkmr.appendChild(kmr);
+    var form = document.querySelector("#form");
+    var referencia = document.querySelector("#divcidade");
+    form.insertBefore(divkmr, referencia);
 };
 
 function forConsumo(){
-    var divkmf = document.getElementById("divcons");
+    var divcons = document.createElement("div");
+    divcons.id = "divcons";
     var labcons = document.createElement("label");
     var cons = document.createElement("input");
+    divcons.classList  = "col-md-2";
     labcons.classList = "form-label";
     labcons.textContent = "Consumo";
     cons.classList = "form-control";
@@ -101,13 +123,16 @@ function forConsumo(){
     cons.readOnly = true;
     divcons.appendChild(labcons);
     divcons.appendChild(cons);
+    var form = document.querySelector("#form");
+    var referencia = document.querySelector("#divcidade");
+    form.insertBefore(divcons, referencia);
 };
 
 function clearKm(){
-    document.getElementById("divkmi").innerHTML = "";
-    document.getElementById("divkmf").innerHTML = "";
-    document.getElementById("divkmr").innerHTML = "";
-    document.getElementById("divcons").innerHTML = "";
+    document.getElementById("divkmi").remove();
+    document.getElementById("divkmf").remove();
+    document.getElementById("divkmr").remove();
+    document.getElementById("divcons").remove();
 };
 
 function alterDespesa(id, viagem, tipo, data, qnt, valor, nota, kmi, kmf, kmr, media, cid, pag){

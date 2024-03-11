@@ -35,6 +35,10 @@ class DadosView(FormView):
         res = form.stockExpenses()
         messages.success(self.request, res)
         return super().form_valid(form)
+    
+    def form_invalid(self, form: Any) -> HttpResponse:
+        messages.error(self.request, 'Dados inválidos!!!')
+        return super().form_invalid(form)
 
 
 class CarrosView(FormView):

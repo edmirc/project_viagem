@@ -194,11 +194,11 @@ class DespesasForm(forms.Form):
     tipo = forms.CharField(label='tipo')
     qnt = forms.DecimalField(label='qnt', max_digits=10, decimal_places=2)
     valor = forms.DecimalField(label='valor', max_digits=10, decimal_places=2)
-    nota = forms.IntegerField(label='nota')
-    kmi = forms.IntegerField(label='kmi')
-    kmf = forms.IntegerField(label='kmf')
-    kmr = forms.IntegerField(label='kmr')
-    consumo = forms.DecimalField(label='consumo', decimal_places=2, max_digits=10)
+    nota = forms.IntegerField(label='nota', required=False)
+    kmi = forms.IntegerField(label='kmi', required=False)
+    kmf = forms.IntegerField(label='kmf', required=False)
+    kmr = forms.IntegerField(label='kmr', required=False)
+    media = forms.DecimalField(label='consumo', decimal_places=2, max_digits=10, required=False)
     cidade = forms.CharField(label='cidade')
     pg = forms.CharField(label='pg')
     imagem = forms.FileField(label='imagem', required=False)
@@ -206,6 +206,7 @@ class DespesasForm(forms.Form):
 
     def stockExpenses(self):
         id =  self.cleaned_data['id']
+        print(self.cleaned_data)
         if id is None:
             return Despesas().saveDespesa(self.cleaned_data, 'salvar')
         else:
