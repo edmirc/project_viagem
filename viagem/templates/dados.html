@@ -111,12 +111,11 @@
                 {% if item.idtipo.id != 5 %}
                 <td></td>
                 <td></td>
-                <td></td>
                 {% else %}
                 <td>{{ item.kmrodado }}</td>
                 <td>{{ item.media }}</td>
-                <td>{{ item.idcidade.nome }}</td>
                 {% endif %}
+                <td>{{ item.idcidade.nome }}</td>
                 <td>{{ item.idpagamento.forma }}</td>
                 <td><button type="button" class="btn btn-primary" 
                 onclick="alterDespesa('{{ item.id }}', '{{ item.idnomeviagem.id }}', 

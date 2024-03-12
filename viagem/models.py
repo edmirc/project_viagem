@@ -212,43 +212,43 @@ class Despesas(models.Model):
     def saveDespesa(self, post: dict, acao: str):
         bt = post['bt']
         if bt == '1':
-            try:
-                if acao == 'alterar':
-                    dados = Despesas.objects.get(id = post['id'])
-                    if post['imagem'] is not None:
-                        self.confereNota(post['imagem'], dados.imagemnota)
-                else:
-                    dados = Despesas()
-                dados.idnomeviagem = NomeViagem.objects.get(id=post['nome_viagem'])
-                dados.data = post['data']
-                dados.idtipo = Tipos.objects.get(id=post['tipo'])
-                dados.qnt = post['qnt']
-                dados.valor = post['valor']
-                dados.nota = post['nota']
-                if dados.idtipo.id == 5:
-                    dados.kminicial = post['kmi']
-                    dados.kmfinal = post['kmf']
-                    dados.kmrodado = post['kmr']
-                    dados.media = post['media']
-                else:
-                    dados.kminicial = 0
-                    dados.kmfinal = 0
-                    dados.kmrodado = 0
-                    dados.media = 0
-                dados.idcidade = Cidades.objects.get(id=post['cidade'])
-                dados.idpagamento = Pagamentos.objects.get(id=post['pg'])
-                if post['imagem'] is not None : 
-                    dados.imagemnota = post['imagem']
-                dados.save()
-                if post['imagem'] is not None: 
-                    trataImagem(str(post['imagem']))
-                if dados.kminicial > 0 and id is None:
-                    viagem = NomeViagem.objects.get(id=post['nome_viagem']) 
-                    viagem.kmfinal = post['kmf']
-                    viagem.save()
-                return f'Despesa {dados.idtipo.tipo}, {acao} com sucesso!!!'
-            except:
-                return 'Dados NÂO salvos!!!'
+            #try:
+            if acao == 'alterar':
+                dados = Despesas.objects.get(id = post['id'])
+                if post['imagem'] is not None:
+                    self.confereNota(post['imagem'], dados.imagemnota)
+            else:
+                dados = Despesas()
+            dados.idnomeviagem = NomeViagem.objects.get(id=post['nome_viagem'])
+            dados.data = post['data']
+            dados.idtipo = Tipos.objects.get(id=post['tipo'])
+            dados.qnt = post['qnt']
+            dados.valor = post['valor']
+            dados.nota = post['nota']
+            if dados.idtipo.id == 5:
+                dados.kminicial = post['kmi']
+                dados.kmfinal = post['kmf']
+                dados.kmrodado = post['kmr']
+                dados.media = post['media']
+            else:
+                dados.kminicial = 0
+                dados.kmfinal = 0
+                dados.kmrodado = 0
+                dados.media = 0
+            dados.idcidade = Cidades.objects.get(id=post['cidade'])
+            dados.idpagamento = Pagamentos.objects.get(id=post['pg'])
+            if post['imagem'] is not None : 
+                dados.imagemnota = post['imagem']
+            dados.save()
+            if post['imagem'] is not None: 
+                trataImagem(str(post['imagem']))
+            if dados.kminicial > 0 and id is None:
+                viagem = NomeViagem.objects.get(id=post['nome_viagem']) 
+                viagem.kmfinal = post['kmf']
+                viagem.save()
+            return f'Despesa {dados.idtipo.tipo}, {acao} com sucesso!!!'
+            #except:
+            #    return 'Dados NÂO salvos!!!'
         elif str(bt) == '3':
             return 'Formulario limpo!!'
         else:

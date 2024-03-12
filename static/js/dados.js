@@ -22,7 +22,6 @@ function voltarAoTopo() {
 
 function despesa(km){
     var despesa = document.getElementById('tipo');
-    var cidade = document.getElementById('cidade');
     var qnt = document.getElementById('qnt');
     if (despesa.value == '5'){
         forKM();
@@ -31,18 +30,22 @@ function despesa(km){
         forConsumo();
         document.getElementById("kmi").value = km;
         document.getElementById("divcidade").classList = "col-md-4";
+        qnt.readOnly = false;
+        qnt.value = ''
     }else{
-        clearKm()
+        try{
+            clearKm()
+        }catch{
+            
+        }
         document.getElementById("divcidade").classList = "col-md-6";
         if (despesa.value == '4' || despesa.value == '7'){
-            var qnt = document.getElementById('qnt'); 
             qnt.value = '0';
             qnt.readOnly = true;
         }else{
             qnt.value = '';
             qnt.readOnly = false;
         };
-        cidade.value = '1';
     };
 };
 
@@ -138,20 +141,24 @@ function clearKm(){
 function alterDespesa(id, viagem, tipo, data, qnt, valor, nota, kmi, kmf, kmr, media, cid, pag){
     var data1 = data.split("/");
     var res  = data1[2] + '-' + data1[1] + '-' + data1[0];
+    var tipos = document.getElementById('tipo')
     qnt = qnt.replace(',', '.')
     valor = valor.replace(',', '.')
     media = media.replace(',', '.')
     document.getElementById('id').value = id;
     document.getElementById('nome_viagem').value = viagem;
-    document.getElementById('tipo').value = tipo;
+    tipos.value = tipo;
     document.getElementById('data').value = res;
     document.getElementById('qnt').value = parseFloat(qnt);
     document.getElementById('valor').value = parseFloat(valor);
     document.getElementById('nota').value = nota;
-    document.getElementById('kmi').value = kmi;
-    document.getElementById('kmf').value = kmf;
-    document.getElementById('kmr').value = kmr;
-    document.getElementById('consumo').value = parseFloat(media);
+    if (tipo == 5){
+        despesa(0)
+        document.getElementById('kmi').value = kmi;
+        document.getElementById('kmf').value = kmf;
+        document.getElementById('kmr').value = kmr;
+        document.getElementById('media').value = parseFloat(media);
+    };
     document.getElementById('cidade').value = cid;
     document.getElementById('pg').value = pag;
     document.getElementById('bt-del').disabled = false;
