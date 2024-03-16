@@ -59,6 +59,7 @@
         <div class="col-md-6">
             <label for="pg" class="form-label">Forma de Pagamento</label>
             <select name="pg" id="pg" class="form-select">
+                <option selected></option>
                 {% for item in pagamento %}
                 <option value="{{ item.id }}">{{ item.forma }}</option>
                 {% endfor %}
