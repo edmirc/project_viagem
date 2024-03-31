@@ -145,10 +145,16 @@ class RelatoriosView(FormView):
     form_class = RelatoriosForm
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        lista: list = list()
         context = super().get_context_data(**kwargs)
         context['nomeRel'] = NomeViagem().getNomeViagem()
-        context['tipo'] =  Tipos().getTipos()
-        context['pagamento'] = Pagamentos().getPagamentos()
+        for i in Tipos().getTipos():
+            lista.append(i.tipo)
+        context['tipo'] =  lista
+        lista = list()
+        for i in Pagamentos().getPagamentos():
+            lista.append(i.forma)
+        context['pagamento'] = lista
         return  context
     
     def form_valid(self, form: Any) -> HttpResponse:

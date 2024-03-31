@@ -3,44 +3,31 @@
 {% load static %}
 <div class="container">
     <h1>Relatorios</h1>
-    <form action="{% url 'relatorio' %}" method="post" autocomplete="off" class="row g-3">
+    <form id="formRel" action="{% url 'relatorio' %}" method="post" autocomplete="off" class="row g-3">
         {% csrf_token %}
-        <div class="col-md-4">
+        <div class="col-md-6">
             <label for="nomev" class="form-label">Selecione a viagem</label>
-            <select name="nomev" id="nomev" class="form-select" required>
+            <select name="nomev" id="nomev" class="form-select">
               <option selected></option>
               {% for item in nomeRel %}
                 <option value="{{ item.id }}">{{ item.nome }}</option>
               {% endfor %}
             </select>
         </div>
-        <div class="col-md-4">
-            <label for="data" class="form-label">Selecione a data</label>
-            <input type="date" name="data" id="data" class="form-control">
+        <div class="col-md-6">
+            <label for="tipo" class="form-label">Tipo de relatorio</label>
+            <select name="relatorio" id="relatorio" class="form-select" required onchange="tipoRelatorio({{ tipo }}, {{ pagamento }})">
+                <option selected></option>
+                <option value="1">Por Viagem</option>
+                <option value="2">Dia</option>
+                <option value="3">Por Período</option>
+                <option value="4">Despesa</option>
+                <option value="5">Pagamento</option>
+                <option value="6">Por Período / Despesa</option>
+                <option value="7">Por Período / Pagamento</option>
+            </select>
         </div>
-        <h5>Tipos de Depesas</h5>
-        {% for i in tipo %}
-        <div class="col-md-4">
-            <ul class="list-group">
-                <li class="list-group-item">
-                <input class="form-check-input me-1" type="radio" name="tipo" value="{{ i.id }}" id="firstRadio" >
-                <label class="form-check-label" for="tipo">{{ i.tipo }}</label>
-                </li>
-            </ul>
-        </div>
-        {% endfor %}
-        <h5>Tipos de Pagamentos</h5>
-        {% for pg in pagamento %}
-        <div class="col-md-4">
-            <ul class="list-group">
-                <li class="list-group-item">
-                <input class="form-check-input me-1" type="radio" name="pagamento" value="{{ pg.id }}" id="firstRadio" >
-                <label class="form-check-label" for="pagamento">{{ pg.forma }}</label>
-                </li>
-            </ul>
-        </div>
-        {% endfor %}
-        <div class="mb-3">
+        <div id = "divBotoes"class="mb-3">
             <button type="submit" class="btn btn-outline-primary" name="bt" id="bt" value="1">Enviar</button>
             <button type="submit" class="btn btn-outline-success" name="bt" id="bt" value="2" style="margin-left: 2%;"><img src="{% static 'image/excel (3).png' %}" ></button>
         </div>
@@ -111,5 +98,5 @@
             </tbody>
     </form>       
 </div>
-
+<script src="{% static 'js/relatorio.js' %}"></script>
 {% endblock %}

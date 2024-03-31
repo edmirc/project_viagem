@@ -132,13 +132,18 @@ function forConsumo(){
 };
 
 function clearKm(){
-    document.getElementById("divkmi").remove();
-    document.getElementById("divkmf").remove();
-    document.getElementById("divkmr").remove();
-    document.getElementById("divcons").remove();
+    try{
+        document.getElementById("divkmi").remove();
+        document.getElementById("divkmf").remove();
+        document.getElementById("divkmr").remove();
+        document.getElementById("divcons").remove();
+    }catch{
+        
+    }
 };
 
 function alterDespesa(id, viagem, tipo, data, qnt, valor, nota, kmi, kmf, kmr, media, cid, pag){
+    clearKm()
     var data1 = data.split("/");
     var res  = data1[2] + '-' + data1[1] + '-' + data1[0];
     var tipos = document.getElementById('tipo')

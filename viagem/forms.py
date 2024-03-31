@@ -168,8 +168,11 @@ class UsuariosForm(forms.Form):
 
 
 class RelatoriosForm(forms.Form):
-    nomev = forms.CharField(label='nome', max_length=50)
+    nomev = forms.CharField(label='nome', max_length=50, required=False)
+    relatorio = forms.CharField(label="relatorio", max_length=50)
     data = forms.DateField(label='data', required=False)
+    dataInicio = forms.DateField(label='dataInicio', required=False)
+    dataFinal = forms.DateField(label='dataFinal', required=False)
     tipo = forms.IntegerField(label='tipo', required=False)
     pagamento = forms.IntegerField(label='pagamento', required=False)
     bt = forms.CharField(label='bt')
@@ -206,7 +209,6 @@ class DespesasForm(forms.Form):
 
     def stockExpenses(self):
         id =  self.cleaned_data['id']
-        print(self.cleaned_data)
         if id is None:
             return Despesas().saveDespesa(self.cleaned_data, 'salvar')
         else:
